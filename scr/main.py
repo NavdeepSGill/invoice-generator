@@ -5,7 +5,7 @@ from tkinter import ttk
 import sv_ttk
 
 FONT = ("Arial", 12)
-PADDING_X, PADDING_Y = 15, 15
+PADDING_X, PADDING_Y = 12, 12
 
 
 def read_client_file() -> dict[str, list[str]]:
@@ -31,26 +31,20 @@ def build_interface():
     root.title("Invoice Generator")
     root.resizable(False, False)
 
-    main_frm = ttk.Frame()
-    main_frm.pack(padx=PADDING_X, pady=PADDING_Y)
+    info_frm = tk.Frame()
+    info_frm.pack(padx=PADDING_X, pady=PADDING_Y)
 
-    name_frm = ttk.Frame(master=main_frm)
-    name_frm.grid(row=0, column=0, sticky='ew', padx=PADDING_X, pady=PADDING_Y)
-    name_lbl = ttk.Label(master=name_frm, text="Client: ", font=FONT)
-    name_lbl.pack(side=tk.LEFT)
-    name_combobox = ttk.Combobox(master=name_frm, values=list(clients.keys()), width=30, font=FONT)
-    name_combobox.pack(side=tk.LEFT)
-
-    lables = ["Email", "Street", "City", "Province", "Postal Code"]
+    lables = ["Name", "Email", "Street", "City", "Province", "Postal Code"]
     entries = {}
 
     for i in range(len(lables)):
-        frm = ttk.Frame(master=main_frm)
-        frm.grid(row=i+1, column=0, sticky='ew', padx=PADDING_X, pady=PADDING_Y)
-        lbl = ttk.Label(master=frm, text=f"{lables[i]}: ", font=FONT)
-        lbl.pack(side=tk.LEFT)
-        entries[lables[i]] = ttk.Entry(master=frm, font=FONT, state="readonly")
-        entries[lables[i]].pack(side=tk.LEFT)
+        lbl = ttk.Label(master=info_frm, text=f"{lables[i]}: ", font=FONT)
+        lbl.grid(row=i, column=0, sticky='w', padx=(PADDING_X, 0), pady=PADDING_Y)
+        if lables[i] == "Name":
+            entries[lables[i]] = ttk.Combobox(master=info_frm, font=FONT, width=27, values=list(clients.keys()))
+        else:
+            entries[lables[i]] = ttk.Entry(master=info_frm, font=FONT, width=30, state="readonly")
+        entries[lables[i]].grid(row=i, column=1, sticky='e', padx=(0, PADDING_X), pady=PADDING_Y)
 
     sv_ttk.set_theme("light")
     root.mainloop()
