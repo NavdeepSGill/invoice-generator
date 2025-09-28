@@ -37,6 +37,9 @@ def build_interface():
     button_frm = tk.Frame()
     button_frm.grid(row=0, column=1, padx=(30, PADDING_X), pady=PADDING_Y)
 
+    service_frm = tk.Frame(bg="red")
+    service_frm.grid(row=1, column=0, columnspan=2, padx=PADDING_X, pady=PADDING_Y)
+
     labels = ["Name", "Email", "Street", "City", "Province", "Postal Code"]
     entries = {}
     for i in range(len(labels)):
@@ -53,6 +56,10 @@ def build_interface():
 
     add_service_btn = tk.Button(master=button_frm, text="Add Service", font=FONT, width=15, height=5)
     add_service_btn.grid(row=1, column=0, padx=PADDING_X, pady=PADDING_Y)
+
+    # TODO replace placeholder label
+    service_lbl = ttk.Label(master=service_frm, text="Placeholder")
+    service_lbl.pack()
 
     # sv_ttk.set_theme("light")
     root.mainloop()
