@@ -55,7 +55,7 @@ class App(tk.Tk):
 
         self.frames = {}
 
-        for F in (MainPage, ClientPage):  # TODO add ServicePage when implemented
+        for F in (MainPage, ClientPage, ServicePage):
             frame = F(self.container, self)
             self.frames[F] = frame
             frame.grid(row=0, column=0, sticky="nsew")
@@ -124,7 +124,13 @@ class MainPage(tk.Frame):
 class ClientPage(tk.Frame):
     def __init__(self, parent, window):
         super().__init__(parent)
-        tk.Label(master=self, text="HELLO WORLD", font=("Arial", 20)).pack()
+        tk.Label(master=self, text="Client Page", font=("Arial", 20)).pack()
+
+
+class ServicePage(tk.Frame):
+    def __init__(self, parent, window):
+        super().__init__(parent)
+        tk.Label(master=self, text="Service Page", font=("Arial", 20)).pack()
 
 
 if __name__ == "__main__":
