@@ -4,6 +4,7 @@ import tkinter as tk
 from tkinter import ttk
 # import sv_ttk
 
+
 FONT = ("Arial", 12)
 PADDING_X, PADDING_Y = 12, 12
 
@@ -42,53 +43,68 @@ def read_service_file() -> dict[str, int]:
         return {}
 
 
-def interface():
-    """Builds and displays the UI"""
-    root = tk.Tk()
-    root.title("Invoice Generator")
-    root.resizable(False, False)
+class App(tk.Tk):
+    def __init__(self):
+        super().__init__()
+        self.title("Invoice Generator")
+        self.resizable(False, False)
 
-    main_frm = tk.Frame()
-    main_frm.pack()
+        self.container = tk.Frame(master=self)
+        self.container.pack()
 
-    info_frm = tk.Frame(master=main_frm)
-    info_frm.grid(row=0, column=0, padx=PADDING_X, pady=PADDING_Y)
+        self.frames = {}
 
-    button_frm = tk.Frame(master=main_frm)
-    button_frm.grid(row=1, column=0, padx=PADDING_X, pady=PADDING_Y)
+        for F in (MainPage,):  # TODO add (ClientPage, ServicePage) when implemented
+            frame = F(self.container, self)
+            self.frames[F] = frame
+            frame.grid(row=0, column=0)
 
-    service_frm = tk.Frame(master=main_frm)
-    service_frm.grid(row=0, column=1, rowspan=2, padx=PADDING_X, pady=PADDING_Y, sticky='nw')
+        self.show_frame(MainPage)
 
-    labels = ["Name", "Email", "Street", "City", "Province", "Postal Code"]
-    entries = {}
-    for i in range(len(labels)):
-        lbl = ttk.Label(master=info_frm, text=f"{labels[i]}: ", font=FONT)
-        lbl.grid(row=i, column=0, sticky='w', padx=(PADDING_X, 0), pady=PADDING_Y)
-        if labels[i] == "Name":
-            entries[labels[i]] = ttk.Combobox(master=info_frm, font=FONT, width=30, values=list(clients.keys()))
-        else:
-            entries[labels[i]] = ttk.Entry(master=info_frm, font=FONT, state="readonly")
-        entries[labels[i]].grid(row=i, column=1, sticky='we', padx=(0, PADDING_X), pady=PADDING_Y)
+    def show_frame(self, page):
+        self.frames[page].tkraise()
 
-    edit_client_btn = tk.Button(master=button_frm, text="Edit Clients", font=FONT, width=15, height=3, bg="#e8e8e8")
-    edit_client_btn.grid(row=0, column=0, padx=PADDING_X, pady=PADDING_Y)
 
-    edit_service_btn = tk.Button(master=button_frm, text="Edit Services", font=FONT, width=15, height=3, bg="#e8e8e8")
-    edit_service_btn.grid(row=0, column=1, padx=PADDING_X, pady=PADDING_Y)
+class MainPage(tk.Frame):
+    def __init__(self, parent, window):
+        super().__init__(parent)
+        info_frm = tk.Frame(master=self)
+        info_frm.grid(row=0, column=0, padx=PADDING_X, pady=PADDING_Y)
 
-    service_lbl = ttk.Label(master=service_frm, text="Service: ", font=FONT)
-    service_lbl.grid(row=0, column=0, sticky='w', padx=(PADDING_X, 0), pady=PADDING_Y)
-    service_combobox = ttk.Combobox(master=service_frm, font=FONT, width=30, values=list(services.keys()))
-    service_combobox.grid(row=0, column=1, sticky='we', padx=(0, PADDING_X), pady=PADDING_Y)
-    service_btn = tk.Button(master=service_frm, text="Add Service", font=FONT, bg="#e8e8e8")
-    service_btn.grid(row=0, column=2)
+        button_frm = tk.Frame(master=self)
+        button_frm.grid(row=1, column=0, padx=PADDING_X, pady=PADDING_Y)
 
-    # sv_ttk.set_theme("light")
-    root.mainloop()
+        service_frm = tk.Frame(master=self)
+        service_frm.grid(row=0, column=1, rowspan=2, padx=PADDING_X, pady=PADDING_Y, sticky='nw')
+
+        labels = ["Name", "Email", "Street", "City", "Province", "Postal Code"]
+        entries = {}
+        for i in range(len(labels)):
+            lbl = ttk.Label(master=info_frm, text=f"{labels[i]}: ", font=FONT)
+            lbl.grid(row=i, column=0, sticky='w', padx=(PADDING_X, 0), pady=PADDING_Y)
+            if labels[i] == "Name":
+                entries[labels[i]] = ttk.Combobox(master=info_frm, font=FONT, width=30, values=list(clients.keys()))
+            else:
+                entries[labels[i]] = ttk.Entry(master=info_frm, font=FONT, state="readonly")
+            entries[labels[i]].grid(row=i, column=1, sticky='we', padx=(0, PADDING_X), pady=PADDING_Y)
+
+        edit_client_btn = tk.Button(master=button_frm, text="Edit Clients", font=FONT, width=15, height=3, bg="#e8e8e8")
+        edit_client_btn.grid(row=0, column=0, padx=PADDING_X, pady=PADDING_Y)
+
+        edit_service_btn = tk.Button(master=button_frm, text="Edit Services", font=FONT, width=15, height=3, bg="#e8e8e8")
+        edit_service_btn.grid(row=0, column=1, padx=PADDING_X, pady=PADDING_Y)
+
+        service_lbl = ttk.Label(master=service_frm, text="Service: ", font=FONT)
+        service_lbl.grid(row=0, column=0, sticky='w', padx=(PADDING_X, 0), pady=PADDING_Y)
+        service_combobox = ttk.Combobox(master=service_frm, font=FONT, width=30, values=list(services.keys()))
+        service_combobox.grid(row=0, column=1, sticky='we', padx=(0, PADDING_X), pady=PADDING_Y)
+        service_btn = tk.Button(master=service_frm, text="Add Service", font=FONT, bg="#e8e8e8")
+        service_btn.grid(row=0, column=2)
 
 
 if __name__ == "__main__":
     clients = read_client_file()
     services = read_service_file()
-    interface()
+    app = App()
+    # sv_ttk.set_theme("light")
+    app.mainloop()
