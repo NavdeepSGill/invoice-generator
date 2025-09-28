@@ -46,7 +46,9 @@ def read_service_file() -> dict[str, int]:
 class App(tk.Tk):
     def __init__(self):
         super().__init__()
+
         self.title("Invoice Generator")
+        self.geometry("")
         self.resizable(False, False)
 
         self.container = tk.Frame(master=self)
@@ -54,20 +56,23 @@ class App(tk.Tk):
 
         self.frames = {}
 
-        for F in (MainPage,):  # TODO add (ClientPage, ServicePage) when implemented
+        for F in (MainPage, ClientPage):  # TODO add ServicePage when implemented
             frame = F(self.container, self)
             self.frames[F] = frame
-            frame.grid(row=0, column=0)
+            frame.grid(row=0, column=0, sticky="nesw")
 
         self.show_frame(MainPage)
 
     def show_frame(self, page):
         self.frames[page].tkraise()
+        self.update_idletasks()
+        self.geometry("")
 
 
 class MainPage(tk.Frame):
     def __init__(self, parent, window):
         super().__init__(parent)
+
         info_frm = tk.Frame(master=self)
         info_frm.grid(row=0, column=0, padx=PADDING_X, pady=PADDING_Y)
 
@@ -88,10 +93,12 @@ class MainPage(tk.Frame):
                 entries[labels[i]] = ttk.Entry(master=info_frm, font=FONT, state="readonly")
             entries[labels[i]].grid(row=i, column=1, sticky='we', padx=(0, PADDING_X), pady=PADDING_Y)
 
-        edit_client_btn = tk.Button(master=button_frm, text="Edit Clients", font=FONT, width=15, height=3, bg="#e8e8e8")
+        edit_client_btn = tk.Button(master=button_frm, text="Edit Clients", font=FONT,
+                                    width=15, height=3, bg="#e8e8e8", command=lambda: window.show_frame(ClientPage))
         edit_client_btn.grid(row=0, column=0, padx=PADDING_X, pady=PADDING_Y)
 
-        edit_service_btn = tk.Button(master=button_frm, text="Edit Services", font=FONT, width=15, height=3, bg="#e8e8e8")
+        edit_service_btn = tk.Button(master=button_frm, text="Edit Services", font=FONT,
+                                     width=15, height=3, bg="#e8e8e8")
         edit_service_btn.grid(row=0, column=1, padx=PADDING_X, pady=PADDING_Y)
 
         service_lbl = ttk.Label(master=service_frm, text="Service: ", font=FONT)
@@ -100,6 +107,12 @@ class MainPage(tk.Frame):
         service_combobox.grid(row=0, column=1, sticky='we', padx=(0, PADDING_X), pady=PADDING_Y)
         service_btn = tk.Button(master=service_frm, text="Add Service", font=FONT, bg="#e8e8e8")
         service_btn.grid(row=0, column=2)
+
+
+class ClientPage(tk.Frame):
+    def __init__(self, parent, window):
+        super().__init__(parent)
+        tk.Label(master=self, text="HELLO WORLD", font=("Arial", 20)).pack()
 
 
 if __name__ == "__main__":
