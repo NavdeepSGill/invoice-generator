@@ -110,7 +110,8 @@ class MainPage(tk.Frame):
             font=FONT,
             width=15,
             height=3,
-            bg="#e8e8e8")
+            bg="#e8e8e8",
+            command=lambda: window.show_frame(ServicePage))
         edit_service_btn.grid(row=0, column=1, padx=PADDING_X, pady=PADDING_Y)
 
         service_lbl = ttk.Label(master=service_frm, text="Service: ", font=FONT)
