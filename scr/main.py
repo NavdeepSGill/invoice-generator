@@ -32,21 +32,29 @@ def build_interface():
     root.resizable(False, False)
 
     info_frm = tk.Frame()
-    info_frm.pack(padx=PADDING_X, pady=PADDING_Y)
+    info_frm.grid(row=0, column=0, padx=PADDING_X, pady=PADDING_Y)
 
-    lables = ["Name", "Email", "Street", "City", "Province", "Postal Code"]
+    button_frm = tk.Frame()
+    button_frm.grid(row=0, column=1, padx=(30, PADDING_X), pady=PADDING_Y)
+
+    labels = ["Name", "Email", "Street", "City", "Province", "Postal Code"]
     entries = {}
-
-    for i in range(len(lables)):
-        lbl = ttk.Label(master=info_frm, text=f"{lables[i]}: ", font=FONT)
+    for i in range(len(labels)):
+        lbl = ttk.Label(master=info_frm, text=f"{labels[i]}: ", font=FONT)
         lbl.grid(row=i, column=0, sticky='w', padx=(PADDING_X, 0), pady=PADDING_Y)
-        if lables[i] == "Name":
-            entries[lables[i]] = ttk.Combobox(master=info_frm, font=FONT, width=27, values=list(clients.keys()))
+        if labels[i] == "Name":
+            entries[labels[i]] = ttk.Combobox(master=info_frm, font=FONT, width=30, values=list(clients.keys()))
         else:
-            entries[lables[i]] = ttk.Entry(master=info_frm, font=FONT, width=30, state="readonly")
-        entries[lables[i]].grid(row=i, column=1, sticky='e', padx=(0, PADDING_X), pady=PADDING_Y)
+            entries[labels[i]] = ttk.Entry(master=info_frm, font=FONT, state="readonly")
+        entries[labels[i]].grid(row=i, column=1, sticky='we', padx=(0, PADDING_X), pady=PADDING_Y)
 
-    sv_ttk.set_theme("light")
+    add_client_btn = tk.Button(master=button_frm, text="Add Client", font=FONT, width=15, height=5)
+    add_client_btn.grid(row=0, column=0, padx=PADDING_X, pady=PADDING_Y)
+
+    add_service_btn = tk.Button(master=button_frm, text="Add Service", font=FONT, width=15, height=5)
+    add_service_btn.grid(row=1, column=0, padx=PADDING_X, pady=PADDING_Y)
+
+    # sv_ttk.set_theme("light")
     root.mainloop()
 
 
