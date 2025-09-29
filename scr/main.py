@@ -85,15 +85,16 @@ class MainPage(tk.Frame):
         service_frm.grid(row=0, column=1, rowspan=2, padx=PADDING_X, pady=PADDING_Y, sticky="nw")
 
         labels = ["Name", "Email", "Street", "City", "Province", "Postal Code"]
-        entries = {}
+        self.entries = {}
         for i in range(len(labels)):
             lbl = ttk.Label(master=info_frm, text=f"{labels[i]}: ", font=FONT)
             lbl.grid(row=i, column=0, sticky="w", padx=(PADDING_X, 0), pady=PADDING_Y)
             if labels[i] == "Name":
-                entries[labels[i]] = PopupEntry(master=info_frm, font=FONT, width=40, values=list(clients.keys()))
+                self.entries[labels[i]] = PopupEntry(master=info_frm, font=FONT, width=40,
+                                                     values=list(clients.keys()), command=self.set_info)
             else:
-                entries[labels[i]] = ttk.Entry(master=info_frm, font=FONT, state="readonly")
-            entries[labels[i]].grid(row=i, column=1, sticky="we", padx=(0, PADDING_X), pady=PADDING_Y)
+                self.entries[labels[i]] = ttk.Entry(master=info_frm, font=FONT, state="readonly")
+            self.entries[labels[i]].grid(row=i, column=1, sticky="we", padx=(0, PADDING_X), pady=PADDING_Y)
 
         edit_client_btn = tk.Button(
             master=button_frm,
@@ -120,6 +121,22 @@ class MainPage(tk.Frame):
         service_popup_entry.grid(row=0, column=1, sticky="we", padx=(0, PADDING_X), pady=PADDING_Y)
         service_btn = tk.Button(master=service_frm, text="Add Service", font=FONT, bg="#e8e8e8")
         service_btn.grid(row=0, column=2)
+
+    def set_info(self):
+        name = self.entries["Name"].get_value()
+        labels = ["Email", "Street", "City", "Province", "Postal Code"]
+        if name in clients:
+            for i in range(len(labels)):
+                self.change_entry_text(labels[i], clients[name][i])
+        else:
+            for i in range(len(labels)):
+                self.change_entry_text(labels[i], "")
+
+    def change_entry_text(self, entry, text):
+        self.entries[entry].config(state="normal")
+        self.entries[entry].delete(0, tk.END)
+        self.entries[entry].insert(0, text)
+        self.entries[entry].config(state="readonly")
 
 
 class ClientPage(tk.Frame):
