@@ -3,11 +3,12 @@ from tkinter import ttk
 
 
 class PopupEntry(ttk.Entry):
-    def __init__(self, master=None, values=None, max_rows=8, font="TkDefaultFont", **kwargs):
+    def __init__(self, master=None, values=None, max_rows=8, font="TkDefaultFont", command=None, **kwargs):
         super().__init__(master, font=font, **kwargs)
         self.values = list(values or [])
         self.max_rows = max_rows
         self.filtered = []
+        self.command = command
 
         self.popup = tk.Toplevel(self)
         self.popup.overrideredirect(True)
@@ -32,6 +33,10 @@ class PopupEntry(ttk.Entry):
         self.bind_all("<Button-1>", self._on_global_click, add="+")
         self.winfo_toplevel().bind("<Configure>", lambda e: self._reposition_popup())
         self.bind("<Destroy>", lambda e: self.popup.destroy(), add="+")
+
+    def get_value(self) -> str:
+        """Return the current text inside the entry."""
+        return self.get()
 
     def show_popup(self):
         if not self.filtered:
@@ -86,6 +91,8 @@ class PopupEntry(ttk.Entry):
             self.show_popup()
 
     def _on_keyrelease(self, event):
+        if self.command:
+            self.command()
         if event.keysym in ("Up", "Down", "Return", "Escape", "Tab"):
             return
         self.update_filter()
@@ -174,6 +181,8 @@ class PopupEntry(ttk.Entry):
         self.delete(0, "end")
         self.insert(0, text)
         self.icursor("end")
+        if self.command:
+            self.command()
 
     def _focus_next_widget(self):
         try:
