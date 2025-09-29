@@ -3,6 +3,7 @@ import csv
 import tkinter as tk
 from tkinter import ttk
 # import sv_ttk
+from popup_entry import PopupEntry
 
 
 FONT = ("Arial", 12)
@@ -89,7 +90,7 @@ class MainPage(tk.Frame):
             lbl = ttk.Label(master=info_frm, text=f"{labels[i]}: ", font=FONT)
             lbl.grid(row=i, column=0, sticky="w", padx=(PADDING_X, 0), pady=PADDING_Y)
             if labels[i] == "Name":
-                entries[labels[i]] = ttk.Combobox(master=info_frm, font=FONT, width=30, values=list(clients.keys()))
+                entries[labels[i]] = PopupEntry(master=info_frm, font=FONT, width=40, values=list(clients.keys()))
             else:
                 entries[labels[i]] = ttk.Entry(master=info_frm, font=FONT, state="readonly")
             entries[labels[i]].grid(row=i, column=1, sticky="we", padx=(0, PADDING_X), pady=PADDING_Y)
@@ -103,7 +104,6 @@ class MainPage(tk.Frame):
             bg="#e8e8e8",
             command=lambda: window.show_frame(ClientPage))
         edit_client_btn.grid(row=0, column=0, padx=PADDING_X, pady=PADDING_Y)
-
         edit_service_btn = tk.Button(
             master=button_frm,
             text="Edit Services",
@@ -116,8 +116,8 @@ class MainPage(tk.Frame):
 
         service_lbl = ttk.Label(master=service_frm, text="Service: ", font=FONT)
         service_lbl.grid(row=0, column=0, sticky="w", padx=(PADDING_X, 0), pady=PADDING_Y)
-        service_combobox = ttk.Combobox(master=service_frm, font=FONT, width=30, values=list(services.keys()))
-        service_combobox.grid(row=0, column=1, sticky="we", padx=(0, PADDING_X), pady=PADDING_Y)
+        service_popup_entry = PopupEntry(master=service_frm, font=FONT, width=40, values=list(services.keys()))
+        service_popup_entry.grid(row=0, column=1, sticky="we", padx=(0, PADDING_X), pady=PADDING_Y)
         service_btn = tk.Button(master=service_frm, text="Add Service", font=FONT, bg="#e8e8e8")
         service_btn.grid(row=0, column=2)
 
