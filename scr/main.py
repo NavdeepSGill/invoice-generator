@@ -27,7 +27,7 @@ def read_client_file() -> dict[str, list[str]]:
         return {}
 
 
-def read_service_file() -> dict[str, int]:
+def read_service_file() -> dict[str, float]:
     """Return a dictionary with the name of the service as the key,
     and its price as the value, read from the service_list.csv.
     If there is no service list, creates an empty file instead."""
