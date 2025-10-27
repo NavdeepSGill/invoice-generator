@@ -36,7 +36,7 @@ def read_service_file() -> dict[str, float]:
             service_data = {}
             reader = csv.reader(file)
             for row in reader:
-                service_data[row[0]] = int(row[1])
+                service_data[row[0]] = float(row[1])
         return service_data
     except FileNotFoundError:
         with open("service_list.csv", "w", newline="") as _:
