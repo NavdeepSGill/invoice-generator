@@ -8,6 +8,7 @@ from popup_entry import PopupEntry
 
 FONT = ("Arial", 12)
 PADDING_X, PADDING_Y = 12, 12
+BUTTON_COLOR = "#e8e8e8"
 
 
 def read_client_file() -> dict[str, list[str]]:
@@ -47,6 +48,9 @@ def read_service_file() -> dict[str, float]:
 class App(tk.Tk):
     def __init__(self):
         super().__init__()
+
+        self.clients = read_client_file()
+        self.services = read_service_file()
 
         self.title("Invoice Generator")
         self.resizable(False, False)
@@ -91,7 +95,8 @@ class MainPage(tk.Frame):
             lbl.grid(row=i, column=0, sticky="w", padx=(PADDING_X, 0), pady=PADDING_Y)
             if labels[i] == "Name":
                 self.entries[labels[i]] = PopupEntry(master=info_frm, font=FONT, width=40,
-                                                     values=list(clients.keys()), command=self.set_info)
+                                                     values=list(window.clients.keys()),
+                                                     command=lambda c=window.clients: self.set_info(c))
             else:
                 self.entries[labels[i]] = ttk.Entry(master=info_frm, font=FONT, state="readonly")
             self.entries[labels[i]].grid(row=i, column=1, sticky="we", padx=(0, PADDING_X), pady=PADDING_Y)
@@ -102,7 +107,7 @@ class MainPage(tk.Frame):
             font=FONT,
             width=15,
             height=3,
-            bg="#e8e8e8",
+            bg=BUTTON_COLOR,
             command=lambda: window.show_frame(ClientPage))
         edit_client_btn.grid(row=0, column=0, padx=PADDING_X, pady=PADDING_Y)
         edit_service_btn = tk.Button(
@@ -111,16 +116,17 @@ class MainPage(tk.Frame):
             font=FONT,
             width=15,
             height=3,
-            bg="#e8e8e8",
+            bg=BUTTON_COLOR,
             command=lambda: window.show_frame(ServicePage))
         edit_service_btn.grid(row=0, column=1, padx=PADDING_X, pady=PADDING_Y)
 
         service_lbl = ttk.Label(master=service_frm, text="Service: ", font=FONT)
         service_lbl.grid(row=0, column=0, sticky="w", padx=(PADDING_X, 0), pady=PADDING_Y)
-        self.service_popup_entry = PopupEntry(master=service_frm, font=FONT, width=40, values=list(services.keys()))
+        self.service_popup_entry = PopupEntry(master=service_frm, font=FONT, width=40,
+                                              values=list(window.services.keys()))
         self.service_popup_entry.grid(row=0, column=1, sticky="we", padx=(0, PADDING_X), pady=PADDING_Y)
         service_btn = tk.Button(master=service_frm, text="Add Service", font=FONT,
-                                bg="#e8e8e8", command=self.add_service)
+                                bg=BUTTON_COLOR, command=lambda s=window.services: self.add_service(s))
         service_btn.grid(row=0, column=2)
 
         self.service_table = tk.Frame(master=service_frm)
@@ -135,7 +141,9 @@ class MainPage(tk.Frame):
         self.service_table.grid_columnconfigure(1, weight=1, minsize=80)
         self.service_table.grid_columnconfigure(2, weight=1, minsize=99)
 
-    def set_info(self):
+        # TODO continue here
+
+    def set_info(self, clients):
         name = self.entries["Name"].get_value()
         labels = ["Email", "Street", "City", "Province", "Postal Code"]
         if name in clients:
@@ -154,7 +162,7 @@ class MainPage(tk.Frame):
     def price_format(self, price: float) -> str:
         return f"${price:.2f}"
 
-    def add_service(self):
+    def add_service(self, services):
         if self.service_popup_entry.get() in services:
             lbl_service = tk.Label(master=self.service_table, text=self.service_popup_entry.get(), font=FONT,
                                    borderwidth=1, relief="solid", pady=3)
@@ -184,7 +192,7 @@ class MainPage(tk.Frame):
 
             self.service_popup_entry.delete(0, tk.END)
         else:
-            print(self.service_list)
+            print(self.service_list)  # TODO remove debug
 
     def decrease_amount(self, price_amount, row_widgets):
         if price_amount[1] > 0:
@@ -218,8 +226,6 @@ class ServicePage(tk.Frame):
 
 
 if __name__ == "__main__":
-    clients = read_client_file()
-    services = read_service_file()
     app = App()
     # sv_ttk.set_theme("light")
     app.mainloop()
