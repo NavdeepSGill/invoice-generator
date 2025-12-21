@@ -2,7 +2,7 @@ import tkinter as tk
 from tkinter import ttk
 
 from scr.ui.constants import BUTTON_COLOR, FONT, PADDING_X, PADDING_Y
-from scr.popup_entry import PopupEntry
+from scr.ui.widgets.popup_entry import PopupEntry
 
 
 class MainPage(tk.Frame):

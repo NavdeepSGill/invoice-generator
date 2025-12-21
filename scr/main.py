@@ -3,7 +3,7 @@ import csv
 import tkinter as tk
 from tkinter import ttk
 # import sv_ttk
-from popup_entry import PopupEntry
+from scr.ui.widgets.popup_entry import PopupEntry
 
 
 FONT = ("Arial", 12)
