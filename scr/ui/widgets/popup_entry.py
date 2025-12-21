@@ -31,7 +31,11 @@ class PopupEntry(ttk.Entry):
         self.bind("<Escape>", lambda e: self.hide_popup(), add="+")
         self.listbox.bind("<ButtonRelease-1>", self._on_listbox_click, add="+")
         self.bind_all("<Button-1>", self._on_global_click, add="+")
-        self.winfo_toplevel().bind("<Configure>", lambda e: self._reposition_popup())
+        self._configure_binding = self.winfo_toplevel().bind(
+            "<Configure>",
+            lambda e: self._reposition_popup(),
+            add="+"
+        )
         self.bind("<Destroy>", lambda e: self.popup.destroy(), add="+")
 
     def get_value(self) -> str:
@@ -70,6 +74,10 @@ class PopupEntry(ttk.Entry):
             pass
 
     def _reposition_popup(self):
+        if not hasattr(self, "popup"):
+            return
+        if not self.popup.winfo_exists():
+            return
         if self.popup.state() == "withdrawn":
             return
         x = self.winfo_rootx()
@@ -83,6 +91,17 @@ class PopupEntry(ttk.Entry):
         else:
             q = typed.lower()
             self.filtered = [v for v in self.values if q in v.lower()]
+
+    def destroy(self):
+        try:
+            self.winfo_toplevel().unbind("<Configure>", self._configure_binding)
+        except tk.TclError:
+            pass
+
+        if hasattr(self, "popup") and self.popup.winfo_exists():
+            self.popup.destroy()
+
+        super().destroy()
 
     def _on_focus_in(self, event=None):
         self.icursor("end")
