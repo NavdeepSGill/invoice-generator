@@ -1,7 +1,7 @@
 import tkinter as tk
 
-from scr.data.client_repository import load_clients
-from scr.data.service_repository import load_services
+from scr.data.client_repository import ClientRepository
+from scr.data.service_repository import ServiceRepository
 from scr.ui.client_page import ClientPage
 from scr.ui.constants import PAGE_MAIN
 from scr.ui.main_page import MainPage
@@ -12,8 +12,8 @@ class App(tk.Tk):
     def __init__(self):
         super().__init__()
 
-        self.clients = load_clients()
-        self.services = load_services()
+        self.client_repo = ClientRepository("../data/client_list.csv")
+        self.service_repo = ServiceRepository("../data/service_list.csv")
 
         self.title("Invoice Generator")
         self.resizable(False, False)
@@ -26,6 +26,10 @@ class App(tk.Tk):
     def show_frame(self, page: str):
         for widget in self.container.winfo_children():
             widget.destroy()
+
+        if page == PAGE_MAIN:
+            self.clients = self.client_repo.load()
+            self.services = self.service_repo.load()
 
         match page:
             case "main":

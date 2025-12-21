@@ -1,22 +1,26 @@
 class Client:
     FIELDS = [
+        ("phone", "Phone Number"),
         ("name", "Name"),
-        ("email", "Email"),
         ("street", "Street"),
         ("city", "City"),
         ("province", "Province"),
         ("postal_code", "Postal Code"),
+        ("email", "Email"),
     ]
 
-    def __init__(self, name: str, email: str, street: str, city: str, province: str, postal_code: str):
+    def __init__(self,
+                 phone: str,
+                 name: str,
+                 street: str,
+                 city: str,
+                 province: str,
+                 postal_code: str,
+                 email: str,):
+        self.phone = phone
         self.name = name
-        self.email = email
         self.street = street
         self.city = city
         self.province = province
         self.postal_code = postal_code
-
-
-class ClientList:
-    def __init__(self):
-        self.list = []
+        self.email = email
