@@ -3,6 +3,7 @@ import tkinter as tk
 from scr.data.client_repository import load_clients
 from scr.data.service_repository import load_services
 from scr.ui.client_page import ClientPage
+from scr.ui.constants import PAGE_MAIN
 from scr.ui.main_page import MainPage
 from scr.ui.service_page import ServicePage
 
@@ -20,7 +21,7 @@ class App(tk.Tk):
         self.container = tk.Frame(master=self)
         self.container.pack()
 
-        self.show_frame("main")
+        self.show_frame(PAGE_MAIN)
 
     def show_frame(self, page: str):
         for widget in self.container.winfo_children():

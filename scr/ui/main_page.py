@@ -1,7 +1,7 @@
 import tkinter as tk
 from tkinter import ttk
 
-from scr.ui.constants import BUTTON_COLOR, FONT, PADDING_X, PADDING_Y
+from scr.ui.constants import BUTTON_COLOR, FONT, PADDING_X, PADDING_Y, PAGE_CLIENT, PAGE_SERVICE
 from scr.ui.widgets.popup_entry import PopupEntry
 
 
@@ -38,7 +38,7 @@ class MainPage(tk.Frame):
             width=15,
             height=3,
             bg=BUTTON_COLOR,
-            command=lambda: window.show_frame("client"))
+            command=lambda: window.show_frame(PAGE_CLIENT))
         edit_client_btn.grid(row=0, column=0, padx=PADDING_X, pady=PADDING_Y)
         edit_service_btn = tk.Button(
             master=button_frm,
@@ -47,7 +47,7 @@ class MainPage(tk.Frame):
             width=15,
             height=3,
             bg=BUTTON_COLOR,
-            command=lambda: window.show_frame("service"))
+            command=lambda: window.show_frame(PAGE_SERVICE))
         edit_service_btn.grid(row=0, column=1, padx=PADDING_X, pady=PADDING_Y)
 
         service_lbl = ttk.Label(master=service_frm, text="Service: ", font=FONT)
