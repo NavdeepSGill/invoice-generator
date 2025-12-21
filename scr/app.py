@@ -24,11 +24,16 @@ class App(tk.Tk):
 
     def show_frame(self, page: str):
         for widget in self.container.winfo_children():
-            widget.grid_remove()
+            widget.destroy()
+
         match page:
             case "main":
-                MainPage(self.container, self).grid()
+                frame = MainPage(self.container, self)
             case "client":
-                ClientPage(self.container, self).grid()
+                frame = ClientPage(self.container, self)
             case "service":
-                ServicePage(self.container, self).grid()
+                frame = ServicePage(self.container, self)
+            case _:
+                raise ValueError(f"Unknown page: {page}")
+
+        frame.grid(row=0, column=0, sticky="nsew")
