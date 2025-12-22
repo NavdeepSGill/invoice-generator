@@ -3,7 +3,7 @@ from tkinter import ttk
 
 from scr.models.client import Client
 from scr.models.service import ServiceItem
-from scr.ui.constants import BUTTON_COLOR, FONT, PADDING_X, PADDING_Y, PAGE_CLIENT, PAGE_SERVICE
+from scr.ui.constants import BUTTON_COLOR, FONT, HST, PADDING_X, PADDING_Y, PAGE_CLIENT, PAGE_SERVICE
 from scr.ui.widgets.popup_entry import PopupEntry
 
 
@@ -21,6 +21,7 @@ class MainPage(tk.Frame):
         service_frm = tk.Frame(master=self)
         service_frm.grid(row=0, column=1, rowspan=2, padx=PADDING_X, pady=PADDING_Y, sticky="nw")
 
+        # Client Information Frame
         self.entries = {}
         for i, (attr, label) in enumerate(Client.FIELDS):
             lbl = ttk.Label(master=info_frm, text=f"{label}: ", font=FONT)
@@ -31,6 +32,7 @@ class MainPage(tk.Frame):
                                             )
             self.entries[attr].grid(row=i, column=1, sticky="we", padx=(0, PADDING_X), pady=PADDING_Y)
 
+        # Buttons Frame
         edit_client_btn = tk.Button(master=button_frm, text="Edit Clients", font=FONT, width=15, height=3,
                                     bg=BUTTON_COLOR, command=lambda: self.window.show_frame(PAGE_CLIENT))
         edit_client_btn.grid(row=0, column=0, padx=PADDING_X, pady=PADDING_Y)
@@ -38,6 +40,7 @@ class MainPage(tk.Frame):
                                      bg=BUTTON_COLOR, command=lambda: self.window.show_frame(PAGE_SERVICE))
         edit_service_btn.grid(row=0, column=1, padx=PADDING_X, pady=PADDING_Y)
 
+        # Service Table Frame
         service_lbl = ttk.Label(master=service_frm, text="Service: ", font=FONT)
         service_lbl.grid(row=0, column=0, sticky="w", padx=(PADDING_X, 0), pady=PADDING_Y)
         self.service_popup_entry = PopupEntry(master=service_frm, font=FONT, width=40,
@@ -56,7 +59,23 @@ class MainPage(tk.Frame):
                      pady=3).grid(row=0, column=col, sticky="nsew")
             self.service_table.grid_columnconfigure(col, weight=1, minsize=ServiceItem.COLUMN_MINSIZES[attr])
 
-        # TODO continue here
+        subtotal_frm = tk.Frame(master=service_frm)
+        subtotal_frm.grid(row=2, column=0, columnspan=3, padx=PADDING_X, sticky="e")
+        ttk.Label(master=subtotal_frm, text="Subtotal:", font=FONT).pack(side=tk.LEFT)
+        self.subtotal_lbl = ttk.Label(master=subtotal_frm, text=f"${0:.2f}", font=FONT)
+        self.subtotal_lbl.pack(side=tk.LEFT)
+
+        hst_frm = tk.Frame(master=service_frm)
+        hst_frm.grid(row=3, column=0, columnspan=3, padx=PADDING_X, sticky="e")
+        ttk.Label(master=hst_frm, text="HST:", font=FONT).pack(side=tk.LEFT)
+        self.hst_lbl = ttk.Label(master=hst_frm, text=f"${0:.2f}", font=FONT)
+        self.hst_lbl.pack(side=tk.LEFT)
+
+        total_frm = tk.Frame(master=service_frm)
+        total_frm.grid(row=4, column=0, columnspan=3, padx=PADDING_X, sticky="e")
+        ttk.Label(master=total_frm, text="Total:", font=FONT + ("bold",)).pack(side=tk.LEFT)
+        self.total_lbl = ttk.Label(master=total_frm, text=f"${0:.2f}", font=FONT + ("bold",))
+        self.total_lbl.pack(side=tk.LEFT)
 
     def set_info(self, attribute):
         entry = self.entries[attribute].get_value()
@@ -84,6 +103,7 @@ class MainPage(tk.Frame):
                 item.quantity += 1
                 item.quantity_label.config(text=item.quantity)
                 self.service_popup_entry.delete(0, tk.END)
+                self.update_total()
                 return
 
         row_index = self.next_service_row
@@ -120,10 +140,12 @@ class MainPage(tk.Frame):
         btn_plus.config(command=lambda i=item: self._increase_quantity(i))
 
         self.service_popup_entry.delete(0, tk.END)
+        self.update_total()
 
     def _increase_quantity(self, item: ServiceItem):
         item.quantity += 1
         item.quantity_label.config(text=item.quantity)
+        self.update_total()
 
     def _decrease_quantity(self, item: ServiceItem):
         item.quantity -= 1
@@ -134,3 +156,16 @@ class MainPage(tk.Frame):
             self.service_list.remove(item)
         else:
             item.quantity_label.config(text=item.quantity)
+        self.update_total()
+
+    def update_total(self):
+        subtotal = 0
+        for item in self.service_list:
+            subtotal += item.service.price * item.quantity
+
+        hst = round(subtotal * HST, 2)
+        total = subtotal + hst
+
+        self.subtotal_lbl.config(text=f"${subtotal:.2f}")
+        self.hst_lbl.config(text=f"${hst:.2f}")
+        self.total_lbl.config(text=f"${total:.2f}")
