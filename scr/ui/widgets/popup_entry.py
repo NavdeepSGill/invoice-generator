@@ -177,7 +177,7 @@ class PopupEntry(ttk.Entry):
             clicked_toplevel = event.widget.winfo_toplevel()
         except Exception:
             clicked_toplevel = None
-        if self.popup.winfo_viewable():
+        if self.popup is not None and self.popup.winfo_exists() and self.popup.winfo_viewable():
             if event.widget is self:
                 return
             if clicked_toplevel is self.popup:

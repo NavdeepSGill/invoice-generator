@@ -20,4 +20,9 @@ class ClientRepository:
         return client_list
 
     def save(self, clients: ClientList) -> None:
-        pass  # TODO implement
+        with open(self.path, "w", newline="") as file:
+            writer = csv.writer(file)
+            for client in clients.get_all():
+                writer.writerow(
+                    [getattr(client, attr) for attr, _ in Client.FIELDS]
+                )
