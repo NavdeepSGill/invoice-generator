@@ -8,15 +8,6 @@ class Client:
         ("postal_code", "Postal Code"),
         ("email", "Email"),
     ]
-    COLUMN_MINSIZES = {
-        "phone": 10,
-        "name": 10,
-        "street": 10,
-        "city": 10,
-        "province": 10,
-        "postal_code": 10,
-        "email": 10,
-    }
 
     def __init__(self,
                  phone: str,
