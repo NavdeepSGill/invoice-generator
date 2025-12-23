@@ -8,9 +8,9 @@ from scr.ui.widgets.popup_entry import PopupEntry
 
 
 class MainPage(tk.Frame):
-    def __init__(self, parent, window):
+    def __init__(self, parent, app):
         super().__init__(parent)
-        self.window = window
+        self.app = app
 
         info_frm = tk.Frame(master=self)
         info_frm.grid(row=0, column=0, padx=PADDING_X, pady=PADDING_Y)
@@ -27,24 +27,24 @@ class MainPage(tk.Frame):
             lbl = ttk.Label(master=info_frm, text=f"{label}: ", font=FONT)
             lbl.grid(row=i, column=0, sticky="w", padx=(PADDING_X, 0), pady=PADDING_Y)
             self.entries[attr] = PopupEntry(master=info_frm, font=FONT, width=40,
-                                            values=list(self.window.clients.get_attribute(attr)),
+                                            values=list(self.app.clients.get_attribute(attr)),
                                             command=lambda a=attr: self.set_info(a)
                                             )
             self.entries[attr].grid(row=i, column=1, sticky="we", padx=(0, PADDING_X), pady=PADDING_Y)
 
         # Buttons Frame
         edit_client_btn = tk.Button(master=button_frm, text="Edit Clients", font=FONT, width=15, height=3,
-                                    bg=BUTTON_COLOR, command=lambda: self.window.show_frame(PAGE_CLIENT))
+                                    bg=BUTTON_COLOR, command=lambda: self.app.show_frame(PAGE_CLIENT))
         edit_client_btn.grid(row=0, column=0, padx=PADDING_X, pady=PADDING_Y)
         edit_service_btn = tk.Button(master=button_frm, text="Edit Services", font=FONT, width=15, height=3,
-                                     bg=BUTTON_COLOR, command=lambda: self.window.show_frame(PAGE_SERVICE))
+                                     bg=BUTTON_COLOR, command=lambda: self.app.show_frame(PAGE_SERVICE))
         edit_service_btn.grid(row=0, column=1, padx=PADDING_X, pady=PADDING_Y)
 
         # Service Table Frame
         service_lbl = ttk.Label(master=service_frm, text="Service: ", font=FONT)
         service_lbl.grid(row=0, column=0, sticky="w", padx=(PADDING_X, 0), pady=PADDING_Y)
         self.service_popup_entry = PopupEntry(master=service_frm, font=FONT, width=40,
-                                              values=self.window.services.get_names())
+                                              values=self.app.services.get_names())
         self.service_popup_entry.grid(row=0, column=1, sticky="we", padx=(0, PADDING_X), pady=PADDING_Y)
         service_btn = tk.Button(master=service_frm, text="Add Service", font=FONT,
                                 bg=BUTTON_COLOR, command=self.add_service)
@@ -79,8 +79,8 @@ class MainPage(tk.Frame):
 
     def set_info(self, attribute):
         entry = self.entries[attribute].get_value()
-        if entry in self.window.clients.get_attribute(attribute):
-            client = self.window.clients.get_client(attribute, entry)
+        if entry in self.app.clients.get_attribute(attribute):
+            client = self.app.clients.get_client(attribute, entry)
             for attr, _ in Client.FIELDS:
                 if attr != attribute:
                     self.entries[attr].delete(0, tk.END)
@@ -93,7 +93,7 @@ class MainPage(tk.Frame):
     def add_service(self):
         service_name = self.service_popup_entry.get()
 
-        service = self.window.services.get(service_name)
+        service = self.app.services.get(service_name)
         if service is None:
             print([(x.service.name, x.service.price, x.quantity) for x in self.service_list])  # TODO remove debug
             return
@@ -122,14 +122,14 @@ class MainPage(tk.Frame):
 
         qty_frame = tk.Frame(master=self.service_table, borderwidth=1, relief="solid")
 
-        btn_minus = tk.Button(qty_frame, text=" – ", font=FONT)  # text=" – "
-        btn_minus.grid(row=0, column=0, padx=5, pady=3)  # padx=5, pady=3
+        btn_minus = tk.Button(qty_frame, text=" – ", font=FONT)
+        btn_minus.grid(row=0, column=0, padx=5, pady=3)
 
         qty_lbl = tk.Label(qty_frame, text=item.quantity, font=FONT)
-        qty_lbl.grid(row=0, column=1, pady=3)  # row=0, column=1, pady=3
+        qty_lbl.grid(row=0, column=1, pady=3)
 
-        btn_plus = tk.Button(qty_frame, text=" + ", font=FONT)  # text=" + "
-        btn_plus.grid(row=0, column=2, padx=5, pady=3)  # , pady=3
+        btn_plus = tk.Button(qty_frame, text=" + ", font=FONT)
+        btn_plus.grid(row=0, column=2, padx=5, pady=3)
 
         qty_frame.grid(row=row_index, column=2, sticky="nsew")
 
