@@ -95,7 +95,6 @@ class MainPage(tk.Frame):
 
         service = self.app.services.get(service_name)
         if service is None:
-            print([(x.service.name, x.service.price, x.quantity) for x in self.service_list])  # TODO remove debug
             return
 
         for item in self.service_list:
