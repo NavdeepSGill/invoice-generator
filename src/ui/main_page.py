@@ -1,10 +1,10 @@
 import tkinter as tk
 from tkinter import ttk
 
-from scr.models.client import Client
-from scr.models.service import ServiceItem
-from scr.ui.constants import BUTTON_COLOR, FONT, HST, PADDING_X, PADDING_Y, PAGE_CLIENT, PAGE_SERVICE
-from scr.ui.widgets.popup_entry import PopupEntry
+from src.models.client import Client
+from src.models.service import ServiceItem
+from src.ui.constants import BUTTON_COLOR, FONT, HST, PADDING_X, PADDING_Y, PAGE_CLIENT, PAGE_SERVICE
+from src.ui.widgets.popup_entry import PopupEntry
 
 
 class MainPage(tk.Frame):

@@ -1,7 +1,7 @@
 import csv
 
-from scr.models.service import Service
-from scr.models.service_list import ServiceList
+from src.models.service import Service
+from src.models.service_list import ServiceList
 
 
 class ServiceRepository:

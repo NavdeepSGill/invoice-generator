@@ -1,4 +1,4 @@
-from scr.models.service import Service
+from src.models.service import Service
 
 
 class ServiceList:

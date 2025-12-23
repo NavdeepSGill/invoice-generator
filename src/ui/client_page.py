@@ -2,9 +2,9 @@ import tkinter as tk
 from tkinter import ttk
 from tkinter import messagebox
 
-from scr.models.client import Client
-from scr.ui.constants import BUTTON_COLOR, DEFAULT_ENTRY_BG, ERROR_ENTRY_BG, FONT, PADDING_X, PADDING_Y, PAGE_MAIN
-from scr.ui.widgets.scrollable_frame import ScrollableFrame
+from src.models.client import Client
+from src.ui.constants import BUTTON_COLOR, DEFAULT_ENTRY_BG, ERROR_ENTRY_BG, FONT, PADDING_X, PADDING_Y, PAGE_MAIN
+from src.ui.widgets.scrollable_frame import ScrollableFrame
 
 
 class ClientPage(tk.Frame):

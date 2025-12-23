@@ -1,7 +1,7 @@
 import csv
 
-from scr.models.client import Client
-from scr.models.client_list import ClientList
+from src.models.client import Client
+from src.models.client_list import ClientList
 
 
 class ClientRepository:

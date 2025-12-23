@@ -1,11 +1,11 @@
 import tkinter as tk
 
-from scr.data.client_repository import ClientRepository
-from scr.data.service_repository import ServiceRepository
-from scr.ui.client_page import ClientPage
-from scr.ui.constants import PAGE_MAIN
-from scr.ui.main_page import MainPage
-from scr.ui.service_page import ServicePage
+from src.data.client_repository import ClientRepository
+from src.data.service_repository import ServiceRepository
+from src.ui.client_page import ClientPage
+from src.ui.constants import PAGE_MAIN
+from src.ui.main_page import MainPage
+from src.ui.service_page import ServicePage
 
 
 class App(tk.Tk):

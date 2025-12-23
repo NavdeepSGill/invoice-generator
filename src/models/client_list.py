@@ -1,4 +1,4 @@
-from scr.models.client import Client
+from src.models.client import Client
 
 
 class ClientList:
