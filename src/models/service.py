@@ -1,13 +1,16 @@
 class Service:
+    FIELDS = [
+        ("name", "Service"),
+        ("price", "Price"),
+    ]
+
     def __init__(self, name: str, price: str):
         self.name = name
         self.price = float(price)
 
 
 class ServiceItem:
-    FIELDS = [
-        ("name", "Service"),
-        ("price", "Price"),
+    FIELDS = Service.FIELDS + [
         ("quantity", "Amount"),
     ]
     COLUMN_MINSIZES = {

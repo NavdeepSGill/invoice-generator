@@ -20,4 +20,9 @@ class ServiceRepository:
         return service_list
 
     def save(self, services: ServiceList) -> None:
-        pass  # TODO implement
+        with open(self.path, "w", newline="") as file:
+            writer = csv.writer(file)
+            for service in services.get_all():
+                writer.writerow(
+                    [getattr(service, attr) for attr, _ in Service.FIELDS]
+                )

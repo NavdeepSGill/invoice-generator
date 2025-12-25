@@ -7,7 +7,7 @@ class ServiceList:
 
     def add(self, service: Service):
         if service.name in self.get_names():
-            raise ValueError(f"{service} already exists.")
+            raise ValueError(f"{service.name} already exists.")
         self._services.append(service)
 
     def remove(self, other: Service):
