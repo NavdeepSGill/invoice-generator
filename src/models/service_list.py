@@ -10,10 +10,20 @@ class ServiceList:
             raise ValueError(f"{service} already exists.")
         self._services.append(service)
 
+    def remove(self, other: Service):
+        for service in self._services:
+            if other.name == service.name:
+                self._services.remove(service)
+                return
+
+    def get_all(self) -> list[Service]:
+        return self._services
+
     def get(self, service_name: str) -> Service:
         for service in self._services:
             if service_name == service.name:
                 return service
+        raise ValueError(f"{service_name} not found.")
 
     def get_price(self, service_name: str) -> float:
         for service in self._services:
