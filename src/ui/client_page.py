@@ -107,7 +107,11 @@ class ClientPage(tk.Frame):
             entry = self.entries[attr].get()
             values[attr] = entry.strip()
         client = Client(**values)
-        self.app.clients.add(client)
+        try:
+            self.app.clients.add(client)
+        except ValueError as e:
+            messagebox.showerror("Duplicate Client", str(e))
+            return
         for e in self.entries.values():
             e.delete(0, tk.END)
         self.display_clients()
