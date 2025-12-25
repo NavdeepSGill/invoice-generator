@@ -13,7 +13,7 @@ class ClientPage(tk.Frame):
         self.app = app
 
         table_frm = ScrollableFrame(master=self)
-        table_frm.grid(row=0, column=0, padx=PADDING_X, pady=PADDING_Y, sticky="nsew")
+        table_frm.grid(row=0, column=0, padx=PADDING_X * 2, pady=PADDING_Y, sticky="nsew")
 
         info_frm = tk.Frame(master=self)
         info_frm.grid(row=1, column=0, padx=PADDING_X, pady=PADDING_Y, sticky="ew")
@@ -22,9 +22,9 @@ class ClientPage(tk.Frame):
 
         # Table Frame
         self.client_table_header = tk.Frame(master=table_frm.inner)
-        self.client_table_header.grid(row=0, column=0, padx=PADDING_X, pady=(PADDING_Y, 0), sticky="ew")
+        self.client_table_header.grid(row=0, column=0, padx=0, pady=(PADDING_Y, 0), sticky="ew")
         self.client_table = tk.Frame(master=table_frm.inner)
-        self.client_table.grid(row=1, column=0, padx=PADDING_X, pady=(0, PADDING_Y), sticky="nsew")
+        self.client_table.grid(row=1, column=0, padx=0, pady=(0, PADDING_Y), sticky="nsew")
         for col, (_, header) in enumerate(Client.FIELDS):
             lbl = tk.Label(master=self.client_table_header, text=header, font=FONT + ("bold",),
                            borderwidth=1, relief=tk.SOLID, padx=5, pady=3)
@@ -104,10 +104,13 @@ class ClientPage(tk.Frame):
             return
         values = {}
         for attr, _ in Client.FIELDS:
-            entry = self.entries[attr].get()
-            values[attr] = entry.strip()
+            values[attr] = self.entries[attr].get()
         client = Client(**values)
-        self.app.clients.add(client)
+        try:
+            self.app.clients.add(client)
+        except ValueError as e:
+            messagebox.showerror("Duplicate Client", str(e))
+            return
         for e in self.entries.values():
             e.delete(0, tk.END)
         self.display_clients()

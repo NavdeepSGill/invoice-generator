@@ -5,13 +5,17 @@ class ClientList:
     def __init__(self):
         self._clients = []
 
-    def add(self, client: Client):
-        self._clients.append(client)
+    def add(self, other: Client):
+        for client in self._clients:
+            if client == other:
+                raise ValueError("Client already exists.")
+        self._clients.append(other)
 
     def remove(self, other: Client):
         for client in self._clients:
             if client == other:
                 self._clients.remove(client)
+                return
 
     def get_all(self) -> list[Client]:
         return self._clients
