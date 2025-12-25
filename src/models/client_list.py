@@ -15,6 +15,7 @@ class ClientList:
         for client in self._clients:
             if client == other:
                 self._clients.remove(client)
+                return
 
     def get_all(self) -> list[Client]:
         return self._clients
