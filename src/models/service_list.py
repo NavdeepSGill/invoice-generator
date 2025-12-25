@@ -23,13 +23,11 @@ class ServiceList:
         for service in self._services:
             if service_name == service.name:
                 return service
-        raise ValueError(f"{service_name} not found.")
 
     def get_price(self, service_name: str) -> float:
         for service in self._services:
             if service_name == service.name:
                 return service.price
-        raise ValueError(f"{service_name} not found.")
 
     def get_names(self) -> list[str]:
         return [service.name for service in self._services]

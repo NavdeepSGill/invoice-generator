@@ -1,6 +1,8 @@
 import tkinter as tk
 from tkinter import ttk
 
+from numpy.ma.extras import row_stack
+
 from src.models.client import Client
 from src.models.service import ServiceItem
 from src.ui.constants import BUTTON_COLOR, FONT, HST, PADDING_X, PADDING_Y, PAGE_CLIENT, PAGE_SERVICE
@@ -22,15 +24,17 @@ class MainPage(tk.Frame):
         service_frm.grid(row=0, column=1, rowspan=2, padx=PADDING_X, pady=PADDING_Y, sticky="nw")
 
         # Client Information Frame
+        (ttk.Label(master=info_frm, text="Search for Client", font=("Arial", 20, "bold"))
+         .grid(row=0, column=0, columnspan=2, sticky="w", padx=PADDING_X, pady=PADDING_Y))
         self.entries = {}
         for i, (attr, label) in enumerate(Client.FIELDS):
             lbl = ttk.Label(master=info_frm, text=f"{label}: ", font=FONT)
-            lbl.grid(row=i, column=0, sticky="w", padx=(PADDING_X, 0), pady=PADDING_Y)
+            lbl.grid(row=i + 1, column=0, sticky="w", padx=(PADDING_X, 0), pady=PADDING_Y)
             self.entries[attr] = PopupEntry(master=info_frm, font=FONT, width=40,
                                             values=list(self.app.clients.get_attribute(attr)),
                                             command=lambda a=attr: self.set_info(a)
                                             )
-            self.entries[attr].grid(row=i, column=1, sticky="we", padx=(0, PADDING_X), pady=PADDING_Y)
+            self.entries[attr].grid(row=i + 1, column=1, sticky="we", padx=(0, PADDING_X), pady=PADDING_Y)
 
         # Buttons Frame
         edit_client_btn = tk.Button(master=button_frm, text="Edit Clients", font=FONT, width=15, height=3,
@@ -41,17 +45,19 @@ class MainPage(tk.Frame):
         edit_service_btn.grid(row=0, column=1, padx=PADDING_X, pady=PADDING_Y)
 
         # Service Table Frame
+        (ttk.Label(master=service_frm, text="Enter Services", font=("Arial", 20, "bold"))
+         .grid(row=0, column=0, columnspan=3, sticky="w", padx=PADDING_X, pady=PADDING_Y))
         service_lbl = ttk.Label(master=service_frm, text="Service: ", font=FONT)
-        service_lbl.grid(row=0, column=0, sticky="w", padx=(PADDING_X, 0), pady=PADDING_Y)
+        service_lbl.grid(row=1, column=0, sticky="w", padx=(PADDING_X, 0), pady=PADDING_Y)
         self.service_popup_entry = PopupEntry(master=service_frm, font=FONT, width=40,
                                               values=self.app.services.get_names())
-        self.service_popup_entry.grid(row=0, column=1, sticky="we", padx=(0, PADDING_X), pady=PADDING_Y)
+        self.service_popup_entry.grid(row=1, column=1, sticky="we", padx=(0, PADDING_X), pady=PADDING_Y)
         service_btn = tk.Button(master=service_frm, text="Add Service", font=FONT,
                                 bg=BUTTON_COLOR, command=self.add_service)
-        service_btn.grid(row=0, column=2)
+        service_btn.grid(row=1, column=2)
 
         self.service_table = tk.Frame(master=service_frm)
-        self.service_table.grid(row=1, column=0, columnspan=3, padx=PADDING_X, pady=PADDING_Y, sticky="ew")
+        self.service_table.grid(row=2, column=0, columnspan=3, padx=PADDING_X, pady=PADDING_Y, sticky="ew")
         self.next_service_row = 1
         self.service_list = []
         for col, (attr, header) in enumerate(ServiceItem.FIELDS):
@@ -60,19 +66,19 @@ class MainPage(tk.Frame):
             self.service_table.grid_columnconfigure(col, weight=1, minsize=ServiceItem.COLUMN_MINSIZES[attr])
 
         subtotal_frm = tk.Frame(master=service_frm)
-        subtotal_frm.grid(row=2, column=0, columnspan=3, padx=PADDING_X, sticky="e")
+        subtotal_frm.grid(row=3, column=0, columnspan=3, padx=PADDING_X, sticky="e")
         ttk.Label(master=subtotal_frm, text="Subtotal:", font=FONT).pack(side=tk.LEFT)
         self.subtotal_lbl = ttk.Label(master=subtotal_frm, text=f"${0:.2f}", font=FONT)
         self.subtotal_lbl.pack(side=tk.LEFT)
 
         hst_frm = tk.Frame(master=service_frm)
-        hst_frm.grid(row=3, column=0, columnspan=3, padx=PADDING_X, sticky="e")
+        hst_frm.grid(row=4, column=0, columnspan=3, padx=PADDING_X, sticky="e")
         ttk.Label(master=hst_frm, text="HST:", font=FONT).pack(side=tk.LEFT)
         self.hst_lbl = ttk.Label(master=hst_frm, text=f"${0:.2f}", font=FONT)
         self.hst_lbl.pack(side=tk.LEFT)
 
         total_frm = tk.Frame(master=service_frm)
-        total_frm.grid(row=4, column=0, columnspan=3, padx=PADDING_X, sticky="e")
+        total_frm.grid(row=5, column=0, columnspan=3, padx=PADDING_X, sticky="e")
         ttk.Label(master=total_frm, text="Total:", font=FONT + ("bold",)).pack(side=tk.LEFT)
         self.total_lbl = ttk.Label(master=total_frm, text=f"${0:.2f}", font=FONT + ("bold",))
         self.total_lbl.pack(side=tk.LEFT)
