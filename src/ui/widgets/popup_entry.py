@@ -28,15 +28,15 @@ class PopupEntry(ttk.Entry):
         self.bind("<Up>", self._on_up, add="+")
         self.bind("<Return>", self._on_return, add="+")
         self.bind("<Tab>", self._on_tab, add="+")
-        self.bind("<Escape>", lambda e: self.hide_popup(), add="+")
+        self.bind("<Escape>", lambda _: self.hide_popup(), add="+")
         self.listbox.bind("<ButtonRelease-1>", self._on_listbox_click, add="+")
         self.bind_all("<Button-1>", self._on_global_click, add="+")
         self._configure_binding = self.winfo_toplevel().bind(
             "<Configure>",
-            lambda e: self._reposition_popup(),
+            lambda _: self._reposition_popup(),
             add="+"
         )
-        self.bind("<Destroy>", lambda e: self.popup.destroy(), add="+")
+        self.bind("<Destroy>", lambda _: self.popup.destroy(), add="+")
 
     def get_value(self) -> str:
         """Return the current text inside the entry."""
@@ -70,7 +70,7 @@ class PopupEntry(ttk.Entry):
     def hide_popup(self):
         try:
             self.popup.withdraw()
-        except Exception:
+        except tk.TclError:
             pass
 
     def _reposition_popup(self):
@@ -103,7 +103,7 @@ class PopupEntry(ttk.Entry):
 
         super().destroy()
 
-    def _on_focus_in(self, event=None):
+    def _on_focus_in(self, _):
         self.icursor("end")
         self.update_filter()
         if self.filtered:
@@ -120,7 +120,7 @@ class PopupEntry(ttk.Entry):
         else:
             self.hide_popup()
 
-    def _on_down(self, event):
+    def _on_down(self, _):
         if self.popup.state() != "withdrawn":
             size = self.listbox.size()
             if size == 0:
@@ -141,7 +141,7 @@ class PopupEntry(ttk.Entry):
                 self.show_popup()
             return "break"
 
-    def _on_up(self, event):
+    def _on_up(self, _):
         if self.popup.state() != "withdrawn":
             size = self.listbox.size()
             if size == 0:
@@ -157,11 +157,11 @@ class PopupEntry(ttk.Entry):
             self.icursor("end")
             return "break"
 
-    def _on_return(self, event):
+    def _on_return(self, _):
         self._select_current(move_focus=True)
         return "break"
 
-    def _on_tab(self, event):
+    def _on_tab(self, _):
         self._select_current(move_focus=False)
 
     def _on_listbox_click(self, event):
@@ -175,7 +175,7 @@ class PopupEntry(ttk.Entry):
     def _on_global_click(self, event):
         try:
             clicked_toplevel = event.widget.winfo_toplevel()
-        except Exception:
+        except tk.TclError:
             clicked_toplevel = None
         if self.popup is not None and self.popup.winfo_exists() and self.popup.winfo_viewable():
             if event.widget is self:
@@ -206,5 +206,5 @@ class PopupEntry(ttk.Entry):
     def _focus_next_widget(self):
         try:
             self.winfo_toplevel().focus_set()
-        except Exception:
+        except tk.TclError:
             pass
