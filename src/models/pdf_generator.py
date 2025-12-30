@@ -169,12 +169,6 @@ def create_invoice_pdf(path, settings: Settings, client: Client, services: list[
     c.save()
 
 
-# def preview_pdf():
-#     temp_path = os.path.join(tempfile.gettempdir(), f"Invoice - {INVOICE_NUMBER} {CLIENT_ADDRESS[0]}.pdf")
-#     create_invoice_pdf(temp_path)
-#     webbrowser.open(temp_path)
-
-
 def download_pdf(settings: Settings, client: Client, services: list[ServiceItem]):
     if settings.download_path is None:
         settings.download_path = filedialog.askdirectory(title="Select download folder")
@@ -190,7 +184,3 @@ def download_pdf(settings: Settings, client: Client, services: list[ServiceItem]
         "Saved",
         f"Invoice saved as:\n{filename}"
     )
-
-
-# if __name__ == "__main__":
-#     preview_pdf()
