@@ -191,5 +191,5 @@ class MainPage(Page):
                                     "Please select at least one Service.")
             return
 
-        download_pdf(self.app.settings_repo.load(), self.client, self.service_list)
-        self.app.settings_repo.increment_invoice_number()
+        if download_pdf(self.app.settings_repo.load(), self.client, self.service_list):
+            self.app.settings_repo.increment_invoice_number()

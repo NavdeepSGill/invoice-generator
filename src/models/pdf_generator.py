@@ -173,7 +173,7 @@ def download_pdf(settings: Settings, client: Client, services: list[ServiceItem]
     if settings.download_path is None:
         settings.download_path = filedialog.askdirectory(title="Select download folder")
         if not settings.download_path:
-            return
+            return False
 
     filename = f"Invoice - {settings.invoice_number} {client.name}.pdf"
     path = os.path.join(settings.download_path, filename)
@@ -184,3 +184,4 @@ def download_pdf(settings: Settings, client: Client, services: list[ServiceItem]
         "Saved",
         f"Invoice saved as:\n{filename}"
     )
+    return True
