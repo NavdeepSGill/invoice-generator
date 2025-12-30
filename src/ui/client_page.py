@@ -233,7 +233,7 @@ class ClientPage(Page):
                                 tk.messagebox.showerror("Invalid Postal Code", f"Postal code {msg}")
                                 error = True
                                 break
-            elif 'email' in attr:
+            elif attr == 'email':
                 if value != value.lower():
                     value = value.lower()
                     entry_widget.delete(0, tk.END)

@@ -2,6 +2,7 @@ import tkinter as tk
 
 from src.data.client_repository import ClientRepository
 from src.data.service_repository import ServiceRepository
+from src.data.settings_repository import SettingsRepository
 from src.ui.client_page import ClientPage
 from src.constants import ACTIVE_BG, FG, HOVER_BG, NAV_BG, PAGE_CLIENT, PAGE_MAIN, PAGE_SERVICE, PAGE_SETTINGS
 from src.ui.main_page import MainPage
@@ -15,6 +16,7 @@ class App(tk.Tk):
 
         self.client_repo = ClientRepository("../data/client_list.csv")
         self.service_repo = ServiceRepository("../data/service_list.csv")
+        self.settings_repo = SettingsRepository("../data/settings.json")
 
         self.title("Invoice Generator")
         self.geometry("+100+50")
@@ -58,7 +60,10 @@ class App(tk.Tk):
         self.container = tk.Frame(master=self)
         self.container.pack()
 
-        self.show_frame(PAGE_MAIN)
+        if not self.settings_repo.load():
+            self.show_frame(PAGE_SETTINGS)
+        else:
+            self.show_frame(PAGE_MAIN)
 
     def show_frame(self, page: str):
         if self.current_page:
