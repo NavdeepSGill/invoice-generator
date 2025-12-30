@@ -5,7 +5,7 @@ from tkinter import messagebox
 from src.models.client import Client
 from src.models.pdf_generator import download_pdf
 from src.models.service import ServiceItem
-from src.constants import BUTTON_COLOR, FONT, HST, PADDING_X, PADDING_Y
+from src.constants import BUTTON_COLOR, FONT, PADDING_X, PADDING_Y
 from src.ui.base_page import Page
 from src.ui.widgets.popup_entry import PopupEntry
 
@@ -14,6 +14,8 @@ class MainPage(Page):
     def __init__(self, parent, app):
         super().__init__(parent)
         self.app = app
+
+        self.client = None
 
         info_frm = tk.Frame(master=self)
         info_frm.grid(row=0, column=0, padx=PADDING_X, pady=PADDING_Y)
@@ -81,15 +83,16 @@ class MainPage(Page):
     def set_info(self, attribute):
         entry = self.entries[attribute].get_value()
         if entry in self.app.clients.get_attribute(attribute):
-            client = self.app.clients.get_client(attribute, entry)
+            self.client = self.app.clients.get_client(attribute, entry)
             for attr, _ in Client.FIELDS:
                 if attr != attribute:
                     self.entries[attr].delete(0, tk.END)
-                    self.entries[attr].insert(0, getattr(client, attr))
+                    self.entries[attr].insert(0, getattr(self.client, attr))
         else:
             for attr, _ in Client.FIELDS:
                 if attr != attribute:
                     self.entries[attr].delete(0, tk.END)
+                    self.client = None
 
     def add_service(self):
         service_name = self.service_popup_entry.get()
@@ -163,7 +166,8 @@ class MainPage(Page):
         for item in self.service_list:
             subtotal += item.service.price * item.quantity
 
-        hst = round(subtotal * HST, 2)
+        tax_rate = self.app.settings_repo.load().tax_rate
+        hst = round(subtotal * tax_rate, 2)
         total = subtotal + hst
 
         self.subtotal_lbl.config(text=f"${subtotal:.2f}")
@@ -176,3 +180,16 @@ class MainPage(Page):
                                          "You have unsaved changes. Are you sure you want to leave?")
             return result
         return True
+
+    def save_as_pdf(self):
+        if any(entry.get() == "" for entry in self.entries.values()):
+            tk.messagebox.showerror("Empty Fields",
+                                    "Please select a Client.")
+            return
+        elif not self.service_list:
+            tk.messagebox.showerror("Empty Fields",
+                                    "Please select at least one Service.")
+            return
+
+        download_pdf(self.app.settings_repo.load(), self.client, self.service_list)
+        self.app.settings_repo.increment_invoice_number()

@@ -18,5 +18,3 @@ PAGE_MAIN = "main"
 PAGE_CLIENT = "client"
 PAGE_SERVICE = "service"
 PAGE_SETTINGS = "settings"
-
-HST = 0.13

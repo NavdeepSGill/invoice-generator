@@ -52,3 +52,11 @@ class SettingsRepository:
 
         with open(self.path, "w", encoding="utf-8") as f:
             json.dump(data, f, indent=2)
+
+    def increment_invoice_number(self) -> None:
+        settings = self.load()
+        if settings is None:
+            return
+
+        settings.invoice_number += 1
+        self.save(settings)
