@@ -79,7 +79,7 @@ def create_invoice_pdf(path, settings: Settings, client: Client, services: list[
 
     # Logo
     y_meta = height - 1 * inch
-    if os.path.exists(settings.logo_path):
+    if settings.logo_path is not None and os.path.exists(settings.logo_path):
         y_meta -= IMAGE_LENGTH - TITLE_FONT_SIZE
         c.drawImage(
             settings.logo_path,
