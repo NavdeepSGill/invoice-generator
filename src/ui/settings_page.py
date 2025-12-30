@@ -1,5 +1,6 @@
 import tkinter as tk
 from tkinter import filedialog, ttk, messagebox
+import tkinter.font as tkfont
 
 from src.constants import BUTTON_COLOR, DEFAULT_ENTRY_BG, ERROR_ENTRY_BG, FONT, PADDING_X, PADDING_Y, PAGE_MAIN
 from src.models.settings import Settings
@@ -19,6 +20,10 @@ class SettingsPage(Page):
 
         self.entries = {}
 
+        self.path_font = tkfont.Font(font=FONT)
+        self.path_font_strike = tkfont.Font(font=FONT)
+        self.path_font_strike.configure(overstrike=True)
+
         fields_middle_index = len(Settings.FIELDS) // 2
         for i, (attr, label, field_type) in enumerate(Settings.FIELDS):
             lbl = ttk.Label(master=info_frm, text=f"{label}: ", font=FONT)
@@ -34,6 +39,11 @@ class SettingsPage(Page):
                 self.entries[attr] = tk.Button(master=info_frm, text="Select File", font=FONT, width=10, height=1,
                                                bg=BUTTON_COLOR, padx=5, command=self.select_file)
                 self.file_lbl = ttk.Label(master=info_frm, text="", font=FONT)
+                self.file_lbl.config(font=self.path_font, cursor="hand2")
+                self.file_lbl.bind("<Enter>", lambda _: self._on_path_hover_enter("file"))
+                self.file_lbl.bind("<Leave>", lambda _: self._on_path_hover_leave("file"))
+                self.file_lbl.bind("<Button-1>", lambda _: self._clear_path("file"))
+
                 if i < fields_middle_index:
                     self.file_lbl.grid(row=i, column=1, sticky="w", padx=(120, PADDING_X), pady=PADDING_Y)
                 else:
@@ -43,6 +53,10 @@ class SettingsPage(Page):
                 self.entries[attr] = tk.Button(master=info_frm, text="Select Folder", font=FONT, width=10, height=1,
                                                bg=BUTTON_COLOR, padx=5, command=self.select_folder)
                 self.folder_lbl = ttk.Label(master=info_frm, text="", font=FONT)
+                self.folder_lbl.config(font=self.path_font, cursor="hand2")
+                self.folder_lbl.bind("<Enter>", lambda _: self._on_path_hover_enter("folder"))
+                self.folder_lbl.bind("<Leave>", lambda _: self._on_path_hover_leave("folder"))
+                self.folder_lbl.bind("<Button-1>", lambda _: self._clear_path("folder"))
                 if i < fields_middle_index:
                     self.folder_lbl.grid(row=i, column=1, sticky="w", padx=(120, PADDING_X), pady=PADDING_Y)
                 else:
@@ -67,7 +81,7 @@ class SettingsPage(Page):
         if settings is None:
             return
 
-        for attr, label, field_type in Settings.FIELDS:
+        for attr, _, field_type in Settings.FIELDS:
             if field_type == "entry":
                 self.entries[attr].delete(0, tk.END)
                 self.entries[attr].insert(0, str(getattr(settings, attr)))
@@ -95,6 +109,26 @@ class SettingsPage(Page):
 
     def reset_entry_bg(self, event):
         event.widget.config(bg=DEFAULT_ENTRY_BG)
+
+    def _on_path_hover_enter(self, kind: str):
+        if kind == "file" and self.file_path:
+            self.file_lbl.config(font=self.path_font_strike)
+        elif kind == "folder" and self.folder_path:
+            self.folder_lbl.config(font=self.path_font_strike)
+
+    def _on_path_hover_leave(self, kind: str):
+        if kind == "file":
+            self.file_lbl.config(font=self.path_font)
+        elif kind == "folder":
+            self.folder_lbl.config(font=self.path_font)
+
+    def _clear_path(self, kind: str):
+        if kind == "file" and self.file_path:
+            self.file_path = None
+            self.file_lbl.config(text="", font=self.path_font)
+        elif kind == "folder" and self.folder_path:
+            self.folder_path = None
+            self.folder_lbl.config(text="", font=self.path_font)
 
     def validate_entries(self) -> bool:
         error = False
