@@ -1,4 +1,6 @@
+import sys
 import tkinter as tk
+from pathlib import Path
 
 from src.data.client_repository import ClientRepository
 from src.data.service_repository import ServiceRepository
@@ -14,9 +16,12 @@ class App(tk.Tk):
     def __init__(self):
         super().__init__()
 
-        self.client_repo = ClientRepository("../data/client_list.csv")
-        self.service_repo = ServiceRepository("../data/service_list.csv")
-        self.settings_repo = SettingsRepository("../data/settings.json")
+        data_dir = self.app_data_dir()
+        data_dir.mkdir(parents=True, exist_ok=True)
+
+        self.client_repo = ClientRepository(str(data_dir / "client_list.csv"))
+        self.service_repo = ServiceRepository(str(data_dir / "service_list.csv"))
+        self.settings_repo = SettingsRepository(str(data_dir / "settings.json"))
 
         self.title("Invoice Generator")
         self.geometry("+100+50")
@@ -100,3 +105,9 @@ class App(tk.Tk):
         for bnt in self.nav_buttons:
             bnt.config(bg=NAV_BG)
         active_btn.config(bg=ACTIVE_BG)
+
+    def app_data_dir(self, app_name="InvoiceGenerator"):
+        if sys.platform == "win32":
+            return Path.home() / "AppData" / "Local" / app_name
+        else:
+            return Path.home() / f".{app_name.lower()}"
