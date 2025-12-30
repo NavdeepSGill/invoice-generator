@@ -1,15 +1,16 @@
 import tkinter as tk
 from tkinter import ttk
-
-from numpy.ma.extras import row_stack
+from tkinter import messagebox
 
 from src.models.client import Client
+from src.models.pdf_generator import download_pdf
 from src.models.service import ServiceItem
-from src.ui.constants import BUTTON_COLOR, FONT, HST, PADDING_X, PADDING_Y, PAGE_CLIENT, PAGE_SERVICE
+from src.constants import BUTTON_COLOR, FONT, HST, PADDING_X, PADDING_Y
+from src.ui.base_page import Page
 from src.ui.widgets.popup_entry import PopupEntry
 
 
-class MainPage(tk.Frame):
+class MainPage(Page):
     def __init__(self, parent, app):
         super().__init__(parent)
         self.app = app
@@ -17,11 +18,8 @@ class MainPage(tk.Frame):
         info_frm = tk.Frame(master=self)
         info_frm.grid(row=0, column=0, padx=PADDING_X, pady=PADDING_Y)
 
-        button_frm = tk.Frame(master=self)
-        button_frm.grid(row=1, column=0, padx=PADDING_X, pady=PADDING_Y)
-
         service_frm = tk.Frame(master=self)
-        service_frm.grid(row=0, column=1, rowspan=2, padx=PADDING_X, pady=PADDING_Y, sticky="nw")
+        service_frm.grid(row=0, column=1, rowspan=2, padx=PADDING_X, pady=PADDING_Y, sticky="nsew")
 
         # Client Information Frame
         (ttk.Label(master=info_frm, text="Search for Client", font=("Arial", 20, "bold"))
@@ -35,14 +33,6 @@ class MainPage(tk.Frame):
                                             command=lambda a=attr: self.set_info(a)
                                             )
             self.entries[attr].grid(row=i + 1, column=1, sticky="we", padx=(0, PADDING_X), pady=PADDING_Y)
-
-        # Buttons Frame
-        edit_client_btn = tk.Button(master=button_frm, text="Edit Clients", font=FONT, width=15, height=3,
-                                    bg=BUTTON_COLOR, command=lambda: self.app.show_frame(PAGE_CLIENT))
-        edit_client_btn.grid(row=0, column=0, padx=PADDING_X, pady=PADDING_Y)
-        edit_service_btn = tk.Button(master=button_frm, text="Edit Services", font=FONT, width=15, height=3,
-                                     bg=BUTTON_COLOR, command=lambda: self.app.show_frame(PAGE_SERVICE))
-        edit_service_btn.grid(row=0, column=1, padx=PADDING_X, pady=PADDING_Y)
 
         # Service Table Frame
         (ttk.Label(master=service_frm, text="Enter Services", font=("Arial", 20, "bold"))
@@ -82,6 +72,11 @@ class MainPage(tk.Frame):
         ttk.Label(master=total_frm, text="Total:", font=FONT + ("bold",)).pack(side=tk.LEFT)
         self.total_lbl = ttk.Label(master=total_frm, text=f"${0:.2f}", font=FONT + ("bold",))
         self.total_lbl.pack(side=tk.LEFT)
+
+        service_frm.grid_rowconfigure(6, weight=1)
+        (tk.Button(master=service_frm, text="Save as PDF", font=FONT, width=10, height=1, bg=BUTTON_COLOR, padx=5,
+                   command=lambda: self.save_as_pdf())
+         .grid(row=7, column=0, columnspan=3, sticky="se", padx=PADDING_X, pady=PADDING_Y))
 
     def set_info(self, attribute):
         entry = self.entries[attribute].get_value()
@@ -174,3 +169,10 @@ class MainPage(tk.Frame):
         self.subtotal_lbl.config(text=f"${subtotal:.2f}")
         self.hst_lbl.config(text=f"${hst:.2f}")
         self.total_lbl.config(text=f"${total:.2f}")
+
+    def can_leave(self) -> bool:
+        if any(entry.get() != "" for entry in self.entries.values()) or self.service_list:
+            result = messagebox.askyesno("Unsaved Changes",
+                                         "You have unsaved changes. Are you sure you want to leave?")
+            return result
+        return True

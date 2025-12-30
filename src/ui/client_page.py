@@ -3,14 +3,17 @@ from tkinter import ttk
 from tkinter import messagebox
 
 from src.models.client import Client
-from src.ui.constants import BUTTON_COLOR, DEFAULT_ENTRY_BG, ERROR_ENTRY_BG, FONT, PADDING_X, PADDING_Y, PAGE_MAIN
+from src.constants import BUTTON_COLOR, DEFAULT_ENTRY_BG, ERROR_ENTRY_BG, FONT, PADDING_X, PADDING_Y, PAGE_MAIN
+from src.ui.base_page import Page
 from src.ui.widgets.scrollable_frame import ScrollableFrame
 
 
-class ClientPage(tk.Frame):
+class ClientPage(Page):
     def __init__(self, parent, app):
         super().__init__(parent)
         self.app = app
+
+        self.old_client_list = self.app.clients.get_all().copy()
 
         table_frm = ScrollableFrame(master=self)
         table_frm.grid(row=0, column=0, padx=PADDING_X * 2, pady=PADDING_Y, sticky="nsew")
@@ -253,6 +256,20 @@ class ClientPage(tk.Frame):
             error = True
         return error
 
+    def can_leave(self) -> bool:
+        if self.old_client_list != self.app.clients.get_all():
+            result = messagebox.askyesno("Unsaved Changes",
+                                         "You have unsaved changes. Are you sure you want to leave?")
+            return result
+
+        for entry in self.entries.values():
+            if entry.get() != "":
+                result = messagebox.askyesno("Unsaved Changes",
+                                             "You have unsaved changes. Are you sure you want to leave?")
+                return result
+
+        return True
+
     def save(self):
         for entry in self.entries.values():
             if entry.get() != "":
@@ -264,4 +281,5 @@ class ClientPage(tk.Frame):
                     break
 
         self.app.client_repo.save(self.app.clients)
+        self.old_client_list = self.app.clients.get_all().copy()
         self.app.show_frame(PAGE_MAIN)
