@@ -114,6 +114,14 @@ This makes the application portable and easy to update.
 
 ---
 
+## License
+
+This project is licensed under the MIT License.  
+See the [LICENSE](LICENSE) file for details.
+
+
+---
+
 ## Limitations
 
 - Designed for single-user, local use
