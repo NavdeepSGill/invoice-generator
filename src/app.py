@@ -1,3 +1,4 @@
+import os
 import sys
 import tkinter as tk
 from pathlib import Path
@@ -16,7 +17,7 @@ class App(tk.Tk):
     def __init__(self):
         super().__init__()
 
-        icon = tk.PhotoImage(file="../assets/app_icon.png")
+        icon = tk.PhotoImage(file=self.resource_path("assets/app_icon.png"))
         self.iconphoto(True, icon)
 
         data_dir = self.app_data_dir()
@@ -114,3 +115,12 @@ class App(tk.Tk):
             return Path.home() / "AppData" / "Local" / app_name
         else:
             return Path.home() / f".{app_name.lower()}"
+
+    def resource_path(self, relative_path: str) -> str:
+        if hasattr(sys, "_MEIPASS"):
+            # Running from PyInstaller bundle
+            base_path = sys._MEIPASS
+        else:
+            # Running from source → project root (parent of src)
+            base_path = os.path.abspath(os.path.join(os.path.dirname(__file__), ".."))
+        return os.path.join(base_path, relative_path)
