@@ -122,6 +122,20 @@ See the [LICENSE](LICENSE) file for details.
 
 ---
 
+### Windows Defender Warning
+
+When running the executable for the first time, Windows may display a "Windows protected your PC" warning.
+
+This happens because the application is not code-signed and is distributed as a standalone executable.
+
+To run the application:
+1. Click **More info**
+2. Click **Run anyway**
+
+The source code is fully available in this repository.
+
+---
+
 ## Limitations
 
 - Designed for single-user, local use
