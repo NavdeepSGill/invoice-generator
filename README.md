@@ -122,7 +122,7 @@ See the [LICENSE](LICENSE) file for details.
 
 ---
 
-### Windows Defender Warning
+## Windows Defender Warning
 
 When running the executable for the first time, Windows may display a "Windows protected your PC" warning.
 
