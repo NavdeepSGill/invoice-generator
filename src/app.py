@@ -16,6 +16,9 @@ class App(tk.Tk):
     def __init__(self):
         super().__init__()
 
+        icon = tk.PhotoImage(file="../assets/app_icon.png")
+        self.iconphoto(True, icon)
+
         data_dir = self.app_data_dir()
         data_dir.mkdir(parents=True, exist_ok=True)
 
